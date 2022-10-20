@@ -12,15 +12,14 @@ class BingoModel{
 }
 
 enum Options {
-  onSelected,
+  selected,
   notSelected,
 }
 
 class BingoCarton extends StatefulWidget {
   List<BingoModel> list;
-  Color? color;
-  BingoCarton({Key? key,required this.list, this.color = Colors.blue}) : super(key: key);
-
+  Color color;
+  BingoCarton({Key? key,required this.list, this.color = const Color(0xff0000b2)}) : super(key: key);
 
   @override
   State<BingoCarton> createState() => _BingoCartonState();
@@ -28,7 +27,7 @@ class BingoCarton extends StatefulWidget {
 
 class _BingoCartonState extends State<BingoCarton> {
 
-  Options currentOption = Options.onSelected;
+  Options currentOption = Options.selected;
   List<Widget> bingoCards = [];
   List<int> selectedBingos = [];
   ScrollController scrollController = ScrollController();
@@ -51,7 +50,7 @@ class _BingoCartonState extends State<BingoCarton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 350,
+      width: 320,
       height: 500,
       color: const Color(0xffF5F5F5),
       child: Column(
@@ -65,12 +64,16 @@ class _BingoCartonState extends State<BingoCarton> {
                 style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal, letterSpacing: 0.5),)),
           const SizedBox(height: 20,),
           Row( children: [
-            _optionButtons('Elegir mi cartón', Options.onSelected),
+            _optionButtons('Elegir mi cartón', Options.selected),
             const SizedBox(width: 15,),
             _optionButtons('Selección aleatoria', Options.notSelected),
         ],),
           const SizedBox(height: 15,),
-          _bingoCardList()
+          _bingoCardList(),
+          const SizedBox(height: 10,),
+          _counter(),
+          const SizedBox(height: 15,),
+          const SizedBox(width: 320, height: 20,)
         ]
       ),
     );
@@ -90,8 +93,8 @@ class _BingoCartonState extends State<BingoCarton> {
             children: [
               Container(width: 25, height: 25,
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: Colors.white),),
-              Container(height: 18, width: 18,
-                decoration:  BoxDecoration( color: option == currentOption ? Colors.blue : Colors.white, borderRadius: BorderRadius.circular(100)),),
+              Container(height: 16, width: 16,
+                decoration:  BoxDecoration( color: option == currentOption ? widget.color : Colors.white, borderRadius: BorderRadius.circular(100)),),
             ]
           ),
         ),
@@ -100,16 +103,15 @@ class _BingoCartonState extends State<BingoCarton> {
       ],),);
   }
 
-  _bingoCardList(){
-    return Container(
-      width: 350,
-      height: 300,
-      color: Colors.greenAccent,
+  Widget _bingoCardList(){
+    return SizedBox(
+      width: 320,
+      height: 280,
       child: RawScrollbar(
         thickness: 5,
         controller: scrollController,
         thumbColor: Colors.blueAccent,
-        radius: Radius.circular(5),
+        radius: const Radius.circular(5),
         child: Theme(
           data:ThemeData(
             scrollbarTheme: const ScrollbarThemeData(
@@ -138,21 +140,43 @@ class _BingoCartonState extends State<BingoCarton> {
       onTap: (){
         addBingo(bingo);
         isSelected = selectedBingos.contains(bingo.id);
-        print(isSelected);
-        print(selectedBingos);},
+        },
       child: Container(
         width: 150,
-        height: 30,
+        height: 33,
         decoration: BoxDecoration(
+          border: Border.all(color: widget.color),
           borderRadius: BorderRadius.circular(8),
           color: isSelected ? widget.color : Colors.white ,
         ),
         child: Center(
-          child: Text( 'N° ' + bingo.number.toString(),
+          child: Text( 'N° ${bingo.number}',
             style: TextStyle(color: isSelected ? Colors.white : widget.color,
                 fontWeight: FontWeight.bold, fontSize: 15),),
         ),
       ),
+    );
+  }
+
+  // width: 320, height: 40
+  Widget _counter(){
+    return Material(
+      elevation: 1,
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(width: 320, height: 40, 
+        child: Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text('Cartones seleccionados', style: TextStyle(color: Colors.grey, fontSize: 14),),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('3/3', style: TextStyle(color: widget.color, fontSize: 14, fontWeight: FontWeight.bold),),
+          ),
+        ],
+    ),)
     );
   }
 }
