@@ -30,7 +30,25 @@ class _TestMainState extends State<TestMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white,),
-      body: const Center(child: BingoCarton()),
+      body: Center(child: BingoCarton(
+        list: [
+          BingoModel(1,  '10000'),
+          BingoModel(2,  '10002'),
+          BingoModel(3,  '10003'),
+          BingoModel(4,  '10004'),
+          BingoModel(5,  '10005'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(6,  '10006'),
+          BingoModel(7, '123456')],
+      )),
 
     );
   }
