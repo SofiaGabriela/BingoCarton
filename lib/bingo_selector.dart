@@ -12,8 +12,8 @@ class BingoModel{
 }
 
 enum Options {
-  onSelected,
-  notSelected,
+  manual,
+  random,
 }
 
 class BingoCarton extends StatefulWidget {
@@ -28,7 +28,7 @@ class BingoCarton extends StatefulWidget {
 
 class _BingoCartonState extends State<BingoCarton> {
 
-  Options currentOption = Options.onSelected;
+  Options currentOption = Options.manual;
   List<Widget> bingoCards = [];
   List<int> selectedBingos = [];
   ScrollController scrollController = ScrollController();
@@ -38,6 +38,18 @@ class _BingoCartonState extends State<BingoCarton> {
       if(selectedBingos.contains(bingo.id )){selectedBingos.remove(bingo.id); }
       else { selectedBingos.add(bingo.id);}
     });
+  }
+
+  List<BingoModel> getList(Options option){
+    if(option == Options.manual){
+      return widget.list;
+    }
+    else {
+      return [BingoModel(id: 4, number: 100023),
+        BingoModel(id: 5, number: 100045),
+        BingoModel(id: 6, number: 100044),];
+    }
+
   }
 
   @override
@@ -50,7 +62,7 @@ class _BingoCartonState extends State<BingoCarton> {
   @override
   Widget build(BuildContext context) {
     bingoCards = [];
-    widget.list.forEach((element) {
+    getList(currentOption).forEach((element) {
       bingoCards.add(_bingoButton(element));
     });
     return Container(
@@ -68,9 +80,9 @@ class _BingoCartonState extends State<BingoCarton> {
                   style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal, letterSpacing: 0.5),)),
             const SizedBox(height: 20,),
             Row( children: [
-              _optionButtons('Elegir mi cartón', Options.onSelected),
+              _optionButtons('Elegir mi cartón', Options.manual),
               const SizedBox(width: 15,),
-              _optionButtons('Selección aleatoria', Options.notSelected),
+              _optionButtons('Selección aleatoria', Options.random),
             ],),
             const SizedBox(height: 15,),
             _bingoCardList()
@@ -136,20 +148,22 @@ class _BingoCartonState extends State<BingoCarton> {
 
   Widget _bingoButton(BingoModel bingo){
     bool isSelected =  selectedBingos.contains(bingo.id);
-
     return InkWell(
       onTap: (){
         addBingo(bingo);
         },
-      child: Container(
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        //color: isSelected ? widget.color : Colors.white,
         width: 150,
-        height: 30,
+        height: 40,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: isSelected ? widget.color : Colors.white ,
-        ),
+            border: Border.all(color: widget.color!, width: 2),
+            borderRadius: BorderRadius.circular(8),
+            color: isSelected ? widget.color : Colors.white ,
+         ),
         child: Center(
-          child: Text( 'N° ' + bingo.number.toString(),
+          child: Text( 'N° ${bingo.number.toString()}',
             style: TextStyle(color: isSelected ? Colors.white : widget.color,
                 fontWeight: FontWeight.bold, fontSize: 15),),
         ),
