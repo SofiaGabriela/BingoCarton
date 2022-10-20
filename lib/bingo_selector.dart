@@ -20,14 +20,20 @@ enum Options {
 class BingoCarton extends StatefulWidget {
   List<BingoModel> list;
   Color color;
-  BingoCarton({Key? key,required this.list, this.color = const Color(0xff0000b2)}) : super(key: key);
+  Function(List<int>)? onBuy;
+
+  BingoCarton({
+    Key? key,
+    required this.list,
+    this.color = const Color(0xff0000b2),
+    this.onBuy,
+  }) : super(key: key);
 
   @override
   State<BingoCarton> createState() => _BingoCartonState();
 }
 
 class _BingoCartonState extends State<BingoCarton> {
-
   Options currentOption = Options.manual;
   List<Widget> bingoCards = [];
   List<BingoModel> randomBingoCards = [];
@@ -36,19 +42,19 @@ class _BingoCartonState extends State<BingoCarton> {
 
   void addBingo(BingoModel bingo){
     setState(() {
-      if(selectedBingos.contains(bingo.id )){selectedBingos.remove(bingo.id); }
-      else { selectedBingos.add(bingo.id);}
+      if (selectedBingos.contains(bingo.id)) {
+        selectedBingos.remove(bingo.id);
+      } else if (selectedBingos.length < 3) { selectedBingos.add(bingo.id); }
     });
   }
 
-  void onChangeOption(Options option){
+  void onChangeOption(Options option) {
     setState(() {
       selectedBingos = [];
       currentOption = option;
       if (option == Options.random){
         randomBingoCards = [];
         getRandomList(3, widget.list);
-        randomBingoCards.forEach((element) {selectedBingos.add(element.id);});
       }
     });
   }
@@ -60,6 +66,7 @@ class _BingoCartonState extends State<BingoCarton> {
     for(int i=0; i<n; i++){
       randomBingo = ((list..shuffle()).first);
       randomBingoCards.add(randomBingo);
+      addBingo(randomBingo);
       list.remove(randomBingo);
     }
   }
@@ -76,7 +83,6 @@ class _BingoCartonState extends State<BingoCarton> {
   @override
   Widget build(BuildContext context) {
     bingoCards = [];
-
     getList(currentOption).forEach((element) {
       bingoCards.add(_bingoButton(element));
     });
@@ -108,12 +114,7 @@ class _BingoCartonState extends State<BingoCarton> {
               _optionButtons('Selección aleatoria', Options.random),
         ],),
           ),
-          const SizedBox(height: 15,),
-          _bingoCardList(),
-          const SizedBox(height: 10,),
-          _counter(),
-          const SizedBox(height: 15,),
-          CustomButton(text: 'Pagar', textSize: 13,)
+          _pagesControl()
         ]
       ),
     );
@@ -141,6 +142,44 @@ class _BingoCartonState extends State<BingoCarton> {
         const SizedBox(width: 10,),
         Text(text, style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal, letterSpacing: 0.5))
       ],),);
+  }
+
+  Widget _pagesControl(){
+    return IndexedStack(
+      index: currentOption.index,
+      children: [
+        _manualOptionPage(),
+        _randomOptionPage()
+      ],
+    );
+  }
+
+  Widget _manualOptionPage(){
+    return SizedBox( child: Column( children: [
+        const SizedBox(height: 15,),
+        _bingoCardList(),
+        const SizedBox(height: 10,),
+        _counter(),
+        const SizedBox(height: 15,),
+        CustomButton(text: 'Pagar', textSize: 13, isEnabled: selectedBingos.isNotEmpty,
+        onTap: (){ widget.onBuy!(selectedBingos);  } ,)],
+      ),
+      );
+}
+
+  Widget _randomOptionPage(){
+    return Column( children: [
+      const SizedBox(height: 15,),
+      Wrap(
+      direction: Axis.horizontal,
+      spacing: 15,
+      runSpacing: 15,
+      children: bingoCards,),
+      const SizedBox(height: 15,),
+      CustomButton(text: 'Pagar', textSize: 13, isEnabled: selectedBingos.isNotEmpty,
+          onTap: (){ widget.onBuy!(selectedBingos);  } )
+    ],
+    );
   }
 
   Widget _bingoCardList(){
@@ -212,7 +251,7 @@ class _BingoCartonState extends State<BingoCarton> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('3/3', style: TextStyle(color: widget.color, fontSize: 14, fontWeight: FontWeight.bold),),
+            child: Text( '${selectedBingos.length.toString()} / 3', style: TextStyle(color: widget.color, fontSize: 14, fontWeight: FontWeight.bold),),
           ),
         ],
     ),)

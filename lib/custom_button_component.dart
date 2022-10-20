@@ -26,7 +26,7 @@ class CustomButton extends StatefulWidget {
     this.textColor = Colors.white,
     this.borderColor = Colors.transparent,
     this.borderWidth = 1,
-    this.isEnabled = true,
+    this.isEnabled = false,
     this.onTap,
     this.icon,
     this.textWeight = FontWeight.normal,

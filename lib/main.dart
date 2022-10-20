@@ -35,7 +35,7 @@ class _TestMainState extends State<TestMain> {
         color: const Color(0xffF5F5F5),
         child: BingoCarton(
           list: [
-            BingoModel(id: 1, number: 100041),
+            BingoModel(id: 1, number: 100041,),
             BingoModel(id: 2, number: 100042),
             BingoModel(id: 3, number: 100043),
             BingoModel(id: 4, number: 100024),
@@ -50,6 +50,7 @@ class _TestMainState extends State<TestMain> {
             BingoModel(id: 13, number: 100023),
             BingoModel(id: 14, number: 100029),
             ],
+          onBuy: (list) {print(list);},
         ),
       )
       ),
