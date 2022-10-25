@@ -34,7 +34,6 @@ class _TestMainState extends State<TestMain> {
         height: 500,
         color: const Color(0xffF5F5F5),
         child: BingoCarton(
-          maxAmount: 5,
           list: [
             BingoModel(id: 1, number: 100041,),
             BingoModel(id: 2, number: 100042),
