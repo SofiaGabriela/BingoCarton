@@ -267,6 +267,7 @@ class _BingoCartonState extends State<BingoCarton> {
   }
 }
 
+
 class CustomButton extends StatefulWidget {
   final String text;
   final double height;
