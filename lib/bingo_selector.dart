@@ -6,7 +6,7 @@ class BingoModel{
   int id;
   int number;
   
-  BingoModel({required this.id, required this.number,this.itsPressed = false});
+  BingoModel({required this.id, required this.number});
 
   int get gedId => id;
   int get getNumber => number;
