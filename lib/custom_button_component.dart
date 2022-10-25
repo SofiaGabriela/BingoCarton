@@ -1,4 +1,3 @@
-// ignore_for_file: must_be_immutable, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 
@@ -22,13 +21,13 @@ class CustomButton extends StatefulWidget {
   CustomButton({
     super.key,
     required this.text,
-    this.height = 60,
-    this.width = 300,
-    this.backgroundColor = Colors.teal,
+    this.height = 30,
+    this.width = 250,
+    this.backgroundColor = const Color(0xff0000b2),
     this.textColor = Colors.white,
     this.borderColor = Colors.transparent,
     this.borderWidth = 1,
-    this.isEnabled = true,
+    this.isEnabled = false,
     this.onTap,
     this.icon,
     this.textWeight = FontWeight.normal,
@@ -60,7 +59,7 @@ class _CustomButtonState extends State<CustomButton> {
         color: Colors.transparent,
         child: InkWell(
           hoverColor:
-              widget.isEnabled ? widget.backgroundColor : Colors.transparent,
+          widget.isEnabled ? widget.backgroundColor : Colors.transparent,
           splashFactory: widget.isEnabled
               ? InkSplash.splashFactory
               : NoSplash.splashFactory,
@@ -71,7 +70,7 @@ class _CustomButtonState extends State<CustomButton> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _Icon(),
+                _icon(),
                 _text(),
               ],
             ),
@@ -85,7 +84,7 @@ class _CustomButtonState extends State<CustomButton> {
     widget.isEnabled ? widget.onTap!() : null;
   }
 
-  Widget _Icon() {
+  Widget _icon() {
     if (widget.iconPath != null) {
       return Padding(
         padding: const EdgeInsets.only(right: 5),
@@ -120,8 +119,9 @@ class _CustomButtonState extends State<CustomButton> {
         fontWeight: widget.textWeight,
         color: widget.textColor,
         fontSize: widget.textSize ?? (widget.height / 2),
-        letterSpacing: 3,
+        letterSpacing: 0,
       ),
     );
   }
 }
+
