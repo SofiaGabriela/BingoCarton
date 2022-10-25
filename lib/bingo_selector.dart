@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class BingoModel{
   int id;
   int number;
-  bool? itsPressed;
+  
 
   BingoModel({required this.id, required this.number,this.itsPressed = false});
 
