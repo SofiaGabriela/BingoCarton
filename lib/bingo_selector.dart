@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bingo_selector/custom_button_component.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +20,7 @@ enum Options {
 }
 
 class BingoCarton extends StatefulWidget {
+  int maxAmount;
   List<BingoModel> list;
   Color color;
   Function(List<int>)? onBuy;
@@ -27,6 +30,7 @@ class BingoCarton extends StatefulWidget {
     required this.list,
     this.color = const Color(0xff0000b2),
     this.onBuy,
+    this.maxAmount = 3,
   }) : super(key: key);
 
   @override
@@ -44,7 +48,7 @@ class _BingoCartonState extends State<BingoCarton> {
     setState(() {
       if (selectedBingos.contains(bingo.id)) {
         selectedBingos.remove(bingo.id);
-      } else if (selectedBingos.length < 3) { selectedBingos.add(bingo.id); }
+      } else if (selectedBingos.length < widget.maxAmount) { selectedBingos.add(bingo.id); }
     });
   }
 
@@ -54,36 +58,33 @@ class _BingoCartonState extends State<BingoCarton> {
       currentOption = option;
       if (option == Options.random){
         randomBingoCards = [];
-        getRandomList(3, widget.list);
+        randomBingoCards = getRandomList();
+        randomBingoCards.forEach((element) {addBingo(element);});
       }
     });
   }
 
-  void getRandomList(int n, List<BingoModel> bingos){
-    List<BingoModel> list = [...bingos];
-    BingoModel randomBingo;
+  List<BingoModel> getRandomList( ){
+    final random = Random();
+    List<BingoModel> list = [];
+    int aux = 0;
+    int cantidad = widget.maxAmount;
+    int tope = widget.list.length;
+    for(int i=0; i< cantidad; i++ ){
+      aux = random.nextInt(tope);
+      while(list.contains(widget.list[aux])){
+        aux = random.nextInt(tope);
+      }
+      list.add(widget.list[aux]);
+    }
+    return list;
 
-    for(int i=0; i<n; i++){
-      randomBingo = ((list..shuffle()).first);
-      randomBingoCards.add(randomBingo);
-      addBingo(randomBingo);
-      list.remove(randomBingo);
-    }
-  }
-
-  List<BingoModel> getList(Options option){
-    if(option == Options.manual){
-      return widget.list;
-    }
-    else {
-      return randomBingoCards;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     bingoCards = [];
-    getList(currentOption).forEach((element) {
+    (currentOption == Options.manual? widget.list : randomBingoCards).forEach((element) {
       bingoCards.add(_bingoButton(element));
     });
 
@@ -93,18 +94,7 @@ class _BingoCartonState extends State<BingoCarton> {
       color: const Color(0xffF5F5F5),
       child: Column(
         children: [
-          const SizedBox(
-            width: 320, height: 35,
-            child: Align( alignment: Alignment.topLeft,
-                child: Text('Comprar',
-                  style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1.0),)),
-          ),
-          const SizedBox(
-            width: 320,
-            child: Align( alignment: Alignment.topLeft,
-                child: Text('Seleccione una de las siguientes opciones: ',
-                  style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal, letterSpacing: 0.5),)),
-          ),
+          _text(),
           const SizedBox(height: 20,),
           SizedBox(
             width: 320,
@@ -118,6 +108,26 @@ class _BingoCartonState extends State<BingoCarton> {
         ]
       ),
     );
+  }
+
+  _text(){
+    return
+      Column(
+      children : const [
+        SizedBox(
+        width: 320, height: 35,
+        child: Align( alignment: Alignment.topLeft,
+            child: Text('Comprar',
+              style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold, letterSpacing: 1.0),)),
+      ),
+       SizedBox(
+        width: 320,
+        child: Align( alignment: Alignment.topLeft,
+            child: Text('Seleccione una de las siguientes opciones: ',
+              style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal, letterSpacing: 0.5),)),
+      ),
+        ]
+      );
   }
 
   Widget _optionButtons(String text, Options option){
@@ -161,7 +171,7 @@ class _BingoCartonState extends State<BingoCarton> {
         const SizedBox(height: 10,),
         _counter(),
         const SizedBox(height: 15,),
-        CustomButton(text: 'Pagar', textSize: 13, isEnabled: selectedBingos.isNotEmpty,
+        CustomButton(text: 'Pagar',backgroundColor: widget.color, textSize: 13, isEnabled: selectedBingos.isNotEmpty,
         onTap: (){ widget.onBuy!(selectedBingos);  } ,)],
       ),
       );
@@ -176,7 +186,7 @@ class _BingoCartonState extends State<BingoCarton> {
       runSpacing: 15,
       children: bingoCards,),
       const SizedBox(height: 15,),
-      CustomButton(text: 'Pagar', textSize: 13, isEnabled: selectedBingos.isNotEmpty,
+      CustomButton(text: 'Pagar',backgroundColor: widget.color, textSize: 13, isEnabled: selectedBingos.isNotEmpty,
           onTap: (){ widget.onBuy!(selectedBingos);  } )
     ],
     );
@@ -187,9 +197,10 @@ class _BingoCartonState extends State<BingoCarton> {
       width: 320,
       height: 280,
       child: RawScrollbar(
+        thumbVisibility: false,
         thickness: 5,
         controller: scrollController,
-        thumbColor: Colors.blueAccent,
+        thumbColor: Colors.transparent,
         radius: const Radius.circular(5),
         child: Theme(
           data:ThemeData(
@@ -251,7 +262,7 @@ class _BingoCartonState extends State<BingoCarton> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text( '${selectedBingos.length.toString()} / 3', style: TextStyle(color: widget.color, fontSize: 14, fontWeight: FontWeight.bold),),
+            child: Text( '${selectedBingos.length.toString()} / ${widget.maxAmount}', style: TextStyle(color: widget.color, fontSize: 14, fontWeight: FontWeight.bold),),
           ),
         ],
     ),)
