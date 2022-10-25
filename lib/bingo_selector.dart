@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:bingo_selector/custom_button_component.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +6,6 @@ class BingoModel{
   int id;
   int number;
   
-
   BingoModel({required this.id, required this.number,this.itsPressed = false});
 
   int get gedId => id;
