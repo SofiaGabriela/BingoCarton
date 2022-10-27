@@ -53,7 +53,7 @@ class _TestMainState extends State<TestMain> {
             BingoModel(id: 13, number: 100023),
             BingoModel(id: 14, number: 100029),
           ],
-          ShoppIt: (list) {
+          shoppIt: (list) {
             print(list);
           },
         ),
