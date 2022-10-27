@@ -13,7 +13,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: TestMain(),
-
     );
   }
 }
@@ -29,13 +28,17 @@ class _TestMainState extends State<TestMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Container(
+      body: Center(
+          child: Container(
         width: 370,
         height: 500,
         color: const Color(0xffF5F5F5),
         child: BingoCarton(
           list: [
-            BingoModel(id: 1, number: 100041,),
+            BingoModel(
+              id: 1,
+              number: 100041,
+            ),
             BingoModel(id: 2, number: 100042),
             BingoModel(id: 3, number: 100043),
             BingoModel(id: 4, number: 100024),
@@ -49,11 +52,12 @@ class _TestMainState extends State<TestMain> {
             BingoModel(id: 12, number: 100022),
             BingoModel(id: 13, number: 100023),
             BingoModel(id: 14, number: 100029),
-            ],
-          onBuy: (list) {print(list);},
+          ],
+          ShoppIt: (list) {
+            print(list);
+          },
         ),
-      )
-      ),
+      )),
     );
   }
 }
