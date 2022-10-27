@@ -6,7 +6,7 @@ class BingoCarton extends StatefulWidget {
   int maxQuantity;
   List<BingoModel> list;
   Color color;
-  Function(List<int>)? ShoppIt;
+  Function(List<int>)? shoppIt;
 
   ///==========Bingo Selector==========
   ///
@@ -30,7 +30,7 @@ class BingoCarton extends StatefulWidget {
     Key? key,
     required this.list,
     this.color = const Color(0xff0000b2),
-    this.ShoppIt,
+    this.shoppIt,
     this.maxQuantity = 3,
   }) : super(key: key);
 
@@ -221,7 +221,7 @@ class _BingoCartonState extends State<BingoCarton> {
             textSize: 13,
             isEnabled: selectedBingos.isNotEmpty,
             onTap: () {
-              widget.ShoppIt!(selectedBingos);
+              widget.shoppIt!(selectedBingos);
             },
           )
         ],
@@ -250,7 +250,7 @@ class _BingoCartonState extends State<BingoCarton> {
             textSize: 13,
             isEnabled: selectedBingos.isNotEmpty,
             onTap: () {
-              widget.ShoppIt!(selectedBingos);
+              widget.shoppIt!(selectedBingos);
             })
       ],
     );
